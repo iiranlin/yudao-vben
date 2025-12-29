@@ -424,7 +424,7 @@ catalogs:
       specifier: ^4.0.9
       version: 4.0.9
     prettier:
-      specifier: ^3.6.2
+      specifier: ^3.7.4
       version: 3.7.4
     prettier-plugin-tailwindcss:
       specifier: ^0.7.1
