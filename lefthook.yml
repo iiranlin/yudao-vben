@@ -42,9 +42,9 @@
 #       runner: go run
 
 pre-commit:
+  skip: true
   parallel: true
-  env:
-    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
+  source_file_if_present: ~/.huskyrc
   commands:
     code-workspace:
       run: pnpm vsh code-workspace --auto-commit
@@ -68,15 +68,15 @@ pre-commit:
       glob: '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}'
 
 post-merge:
-  env:
-    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
+  skip: true
+  source_file_if_present: ~/.huskyrc
   commands:
     install:
       run: pnpm install
 
 commit-msg:
-  env:
-    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
+  skip: true
+  source_file_if_present: ~/.huskyrc
   commands:
     commitlint:
       run: pnpm exec commitlint --edit $1

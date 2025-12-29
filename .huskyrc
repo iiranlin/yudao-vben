@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+# Load NVM if available
+export NVM_DIR="${HOME}/.nvm"
+
+# Try to load nvm from common locations  
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh"
+elif [ -s "/usr/local/opt/nvm/nvm.sh" ]; then
+  . "/usr/local/opt/nvm/nvm.sh"
+elif [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+  . "/opt/homebrew/opt/nvm/nvm.sh"
+fi
+
+# Use the version specified in .nvmrc if it exists
+if command -v nvm > /dev/null 2>&1; then
+  nvm use 2>/dev/null || nvm use default 2>/dev/null || true
+fi
