@@ -686,6 +686,9 @@ importers:
       lefthook:
         specifier: 'catalog:'
         version: 1.13.6
+      lefthook-darwin-x64:
+        specifier: ^2.0.13
+        version: 2.0.13
       playwright:
         specifier: 'catalog:'
         version: 1.57.0
@@ -8325,6 +8328,11 @@ packages:
 
   lefthook-darwin-x64@1.13.6:
     resolution: {integrity: sha512-CoRpdzanu9RK3oXR1vbEJA5LN7iB+c7hP+sONeQJzoOXuq4PNKVtEaN84Gl1BrVtCNLHWFAvCQaZPPiiXSy8qg==}
+    cpu: [x64]
+    os: [darwin]
+
+  lefthook-darwin-x64@2.0.13:
+    resolution: {integrity: sha512-s/vI6sEE8/+rE6CONZzs59LxyuSc/KdU+/3adkNx+Q13R1+p/AvQNeszg3LAHzXmF3NqlxYf8jbj/z5vBzEpRw==}
     cpu: [x64]
     os: [darwin]
 
@@ -18760,6 +18768,8 @@ snapshots:
 
   lefthook-darwin-x64@1.13.6:
     optional: true
+
+  lefthook-darwin-x64@2.0.13: {}
 
   lefthook-freebsd-arm64@1.13.6:
     optional: true

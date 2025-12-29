@@ -1,6 +1,3 @@
-# 启用 shell rc 文件加载，确保 NVM 环境可用
-rc: ~/.zshrc
-
 # EXAMPLE USAGE:
 #
 #   Refer for explanation to following link:
@@ -46,6 +43,8 @@ rc: ~/.zshrc
 
 pre-commit:
   parallel: true
+  env:
+    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
   commands:
     code-workspace:
       run: pnpm vsh code-workspace --auto-commit
@@ -69,11 +68,15 @@ pre-commit:
       glob: '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}'
 
 post-merge:
+  env:
+    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
   commands:
     install:
       run: pnpm install
 
 commit-msg:
+  env:
+    PATH: ${HOME}/.nvm/versions/node/v23.11.0/bin:${PATH}
   commands:
     commitlint:
       run: pnpm exec commitlint --edit $1
