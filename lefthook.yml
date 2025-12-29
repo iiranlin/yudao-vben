@@ -1,3 +1,6 @@
+# 启用 shell rc 文件加载，确保 NVM 环境可用
+rc: ~/.zshrc
+
 # EXAMPLE USAGE:
 #
 #   Refer for explanation to following link:

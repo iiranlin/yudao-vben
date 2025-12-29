@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { addDynamicIconSelectors } from '@iconify/tailwind';
@@ -11,7 +12,38 @@ import { enterAnimationPlugin } from './plugins/entry';
 
 // import defaultTheme from 'tailwindcss/defaultTheme';
 
-const { packages } = getPackagesSync(process.cwd());
+// 查找 monorepo 根目录
+function findMonorepoRoot(startDir: string): string {
+  let currentDir = startDir;
+
+  while (currentDir !== path.parse(currentDir).root) {
+    // 检查是否存在 pnpm-workspace.yaml 或 package.json with workspaces
+    if (
+      fs.existsSync(path.join(currentDir, 'pnpm-workspace.yaml')) ||
+      fs.existsSync(path.join(currentDir, 'pnpm-lock.yaml'))
+    ) {
+      return currentDir;
+    }
+
+    // 向上一级目录
+    currentDir = path.dirname(currentDir);
+  }
+
+  // 如果找不到，返回起始目录
+  return startDir;
+}
+
+const monorepoRoot = findMonorepoRoot(process.cwd());
+
+let packages: Array<{ dir: string }> = [];
+try {
+  const result = getPackagesSync(monorepoRoot);
+  packages = result.packages;
+} catch (error) {
+  // 如果找不到 packages，使用空数组作为后备方案
+  console.warn('Failed to get packages from monorepo:', error);
+  packages = [];
+}
 
 const tailwindPackages: string[] = [];
 
