@@ -6,15 +6,17 @@ import { DocAlert, IFrame, Page } from '@vben/common-ui';
 import { getConfigKey } from '#/api/infra/config';
 
 const loading = ref(true); // 是否加载中
-const src = ref(`${import.meta.env.VITE_BASE_URL}/doc.html`); // Knife4j UI
-// const src = ref(import.meta.env.VITE_BASE_URL + '/swagger-ui') // Swagger UI
+// const src = ref(`${import.meta.env.VITE_BASE_URL}/doc.html`); // Knife4j UI
+// 自行替换后端代理地址
+const proxyApi = 'http://192.168.110.233:48080'
+const src = ref(proxyApi + '/swagger-ui') // Swagger UI
 
 /** 初始化 */
 onMounted(async () => {
   try {
     const data = await getConfigKey('url.swagger');
     if (data && data.length > 0) {
-      src.value = data;
+      src.value = proxyApi + data;
     }
   } finally {
     loading.value = false;
