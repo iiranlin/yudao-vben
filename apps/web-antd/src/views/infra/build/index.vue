@@ -51,6 +51,12 @@ const designerConfig = ref({
   showInputData: true, // 是否显示录入按钮
   showDevice: true, // 是否显示多端适配选项
   appendConfigData: [], // 定义渲染规则所需的formData
+  // AI 模块配置
+  showAi: true, // 是否显示 AI 模块
+  ai: {
+    // AI 接口地址
+    api: 'https://aiproxy.irlin.cn/api/ai/form',
+  },
 });
 
 const dialogVisible = ref(false); // 弹窗的是否展示
@@ -144,11 +150,27 @@ function highlightedCode(code: string) {
   return result.value || '&nbsp;';
 }
 
+/** 全局函数：供 AI 面板自动应用表单配置 */
+function applyAIFormConfig(rule: any) {
+  if (designer.value && rule) {
+    try {
+      designer.value.setRule(rule);
+      message.success('AI 表单配置已自动应用');
+    } catch (error) {
+      console.error('应用 AI 配置失败:', error);
+      message.error('应用 AI 配置失败');
+    }
+  }
+}
+
 /** 初始化 */
 onMounted(async () => {
   // 注册代码高亮的各种语言
   hljs.registerLanguage('xml', xml);
   hljs.registerLanguage('json', json);
+  
+  // 暴露全局函数供 AI 使用
+  (window as any).__applyAIFormConfig__ = applyAIFormConfig;
 });
 </script>
 
