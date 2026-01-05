@@ -50,3 +50,7 @@ vite.config.ts.*
 *.sw?
 .history
 .cursor
+
+# UI/UX Pro Max
+.agent
+.shared
