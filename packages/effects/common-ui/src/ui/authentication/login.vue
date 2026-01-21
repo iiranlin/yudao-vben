@@ -109,13 +109,6 @@ defineExpose({
         <slot name="title">
           {{ title || `${$t('authentication.welcomeBack')} 👋🏻` }}
         </slot>
-        <template #desc>
-          <span class="text-muted-foreground">
-            <slot name="subTitle">
-              {{ subTitle || $t('authentication.loginSubtitle') }}
-            </slot>
-          </span>
-        </template>
       </Title>
     </slot>
 
@@ -197,7 +190,5 @@ defineExpose({
       </div>
     </slot>
 
-    <!-- 萌新必读 -->
-    <DocLink />
   </div>
 </template>

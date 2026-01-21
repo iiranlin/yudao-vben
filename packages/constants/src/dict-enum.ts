@@ -173,6 +173,12 @@ const IOT_DICT = {
   IOT_VALIDATE_TYPE: 'iot_validate_type', // IOT 数据校验级别
 } as const;
 
+/** ========== hzerp 行展财务模块 ========== */
+const HZERP_DICT = {
+  HZERP_BELONGING_PROJECT_NAME: 'hzerp_belonging_project_name', // 归属项目
+  HZERP_EXPENCE_TYPE: 'hzerp_expence_type', // 费用类型
+} as const
+
 /** 字典类型枚举 - 统一导出 */
 const DICT_TYPE = {
   ...AI_DICT,
@@ -187,6 +193,7 @@ const DICT_TYPE = {
   ...MALL_DICT,
   ...SYSTEM_DICT,
   ...COMMON_DICT,
+  ...HZERP_DICT,
 } as const;
 
 export { DICT_TYPE };

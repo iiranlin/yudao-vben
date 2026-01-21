@@ -16,7 +16,6 @@ const logoDark = computed(() => preferences.logo.sourceDark);
     :app-name="appName"
     :logo="logo"
     :logo-dark="logoDark"
-    :page-description="$t('authentication.pageDesc')"
     :page-title="$t('authentication.pageTitle')"
   >
     <!-- 自定义工具栏 -->
