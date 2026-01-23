@@ -108,19 +108,63 @@ function convertServerMenuToRouteRecordStringComponent(
 ): RouteRecordStringComponent[] {
   const menus: RouteRecordStringComponent[] = [];
   menuList.forEach((menu) => {
-    // 处理顶级链接菜单
-    if (isHttpUrl(menu.path) && menu.parentId === 0) {
+    // 处理 http/https 开头的菜单
+    if (isHttpUrl(menu.path)) {
+      // 解析 URL，处理参数
+      const url = new URL(menu.path);
+      let link: string | undefined;
+      let iframeSrc: string | undefined;
+
+      // add by 芋艿：默认使用内嵌 IFrame，只有加了 _link 参数才跳转外链
+      if (url.searchParams.has('_link')) {
+        // 外链模式：新窗口打开
+        url.searchParams.delete('_link');
+        link = url.toString();
+      } else {
+        // 内嵌 IFrame 模式（默认）
+        // 处理 localhost / 127.0.0.1 替换为当前系统 host
+        if (
+          typeof window !== 'undefined' &&
+          (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+        ) {
+          url.hostname = window.location.hostname;
+        }
+        iframeSrc = url.toString();
+      }
+
+      // 生成语义化的路由路径
+      // 将菜单名称转换为 URL 友好格式（移除空格，转小写，添加后缀）
+      const menuSlug = menu.name
+        .replace(/\s+/g, '-')
+        .toLowerCase()
+        .replace(/[^\u4e00-\u9fa5a-z0-9-]/g, ''); // 保留中文、字母、数字、连字符
+      const pathSuffix = link ? '-link' : '-iframe';
+      // 处理 parent 路径，避免双斜杠问题（当 parent 是 / 或以 / 结尾时）
+      const normalizedParent = parent && parent !== '/' ? parent.replace(/\/+$/, '') : '';
+      const safePath = normalizedParent
+        ? `${normalizedParent}/${menuSlug}${pathSuffix}`
+        : `/${menuSlug}${pathSuffix}`;
+
+      // 处理 name 重复问题
+      let finalName = menu.componentName || menu.name;
+      if (nameSet.has(finalName)) {
+        finalName = `${menu.name}${menu.id}`;
+        console.error(`menu name duplicate: ${menu.name}, id: ${menu.id}`, menu);
+      }
+      nameSet.add(finalName);
+
       const urlMenu: RouteRecordStringComponent = {
         component: 'IFrameView',
         meta: {
           hideInMenu: !menu.visible,
           icon: menu.icon,
-          link: menu.path,
+          iframeSrc,
+          link,
           order: menu.sort,
           title: menu.name,
         },
-        name: menu.name,
-        path: `/${menu.path}/index`,
+        name: finalName,
+        path: safePath,
       };
       menus.push(urlMenu);
       return;
@@ -154,6 +198,20 @@ function convertServerMenuToRouteRecordStringComponent(
     }
     nameSet.add(finalName);
 
+    // add by 芋艿：处理 menu.component 中的 query 参数
+    // https://doc.vben.pro/guide/essentials/route.html#query
+    let query: Record<string, string> | undefined;
+    if (menu.component) {
+      const queryIndex = menu.component.indexOf('?');
+      if (queryIndex !== -1) {
+        // 提取 query 字符串并解析为对象
+        const queryString = menu.component.slice(queryIndex + 1);
+        query = Object.fromEntries(new URLSearchParams(queryString).entries());
+        // 移除 component 中的 query 部分
+        menu.component = menu.component.slice(0, queryIndex);
+      }
+    }
+
     const buildMenu: RouteRecordStringComponent = {
       component: menu.component,
       meta: {
@@ -162,6 +220,7 @@ function convertServerMenuToRouteRecordStringComponent(
         keepAlive: menu.keepAlive,
         order: menu.sort,
         title: menu.name,
+        ...(query && { query }),
       },
       name: finalName,
       path: menu.path,
